@@ -1,0 +1,726 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+
+<title>Vendetta — Private Invitation</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================
+   CONFIGURACIÓN GENERAL
+========================= */
+
+:root {
+  --black: #080808;
+  --white: #f4f4f0;
+  --gray: #777;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* TEXTURA DE FONDO */
+
+.noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .055;
+  z-index: 20;
+
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* =========================
+   PANTALLA PRINCIPAL
+========================= */
+
+.container {
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 30px 7%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  position: relative;
+  z-index: 1;
+
+  transition: opacity 1.2s ease;
+}
+
+header,
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LOGOTIPO */
+
+.logo {
+  font-family: 'Pinyon Script', cursive;
+  font-size: 55px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.small {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--gray);
+}
+
+/* CONTENIDO CENTRAL */
+
+main {
+  text-align: center;
+  padding: 45px 0;
+}
+
+.eyebrow {
+  font-size: 9px;
+  letter-spacing: 6px;
+  color: #777;
+  margin-bottom: 35px;
+}
+
+h1 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(65px, 13vw, 155px);
+  font-weight: 300;
+  letter-spacing: -4px;
+  line-height: .9;
+}
+
+.subtitle {
+  font-family: 'Pinyon Script', cursive;
+  font-size: clamp(40px, 5vw, 60px);
+  color: #aaa;
+  margin-top: 10px;
+}
+
+.description {
+  margin-top: 32px;
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: #666;
+}
+
+/* =========================
+   BOTÓN INTERACTIVO
+========================= */
+
+.hold-area {
+  margin-top: 65px;
+  display: flex;
+  justify-content: center;
+}
+
+.hold-button {
+  width: 150px;
+  height: 150px;
+
+  border: none;
+  background: transparent;
+  color: white;
+
+  position: relative;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  user-select: none;
+}
+
+.hold-button svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.track,
+.progress {
+  fill: none;
+  stroke-width: 1;
+}
+
+.track {
+  stroke: #333;
+}
+
+.progress {
+  stroke: white;
+  stroke-dasharray: 427.26;
+  stroke-dashoffset: 427.26;
+}
+
+.button-text {
+  font-size: 9px;
+  letter-spacing: 3px;
+  pointer-events: none;
+}
+
+.button-subtext {
+  font-size: 7px;
+  color: #777;
+  letter-spacing: 2px;
+  pointer-events: none;
+}
+
+/* =========================
+   REVELACIÓN
+========================= */
+
+.reveal-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+
+  background: #050505;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  padding: 30px;
+  text-align: center;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition:
+    opacity 1.5s ease,
+    visibility 1.5s;
+}
+
+.reveal-screen.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* TEXTOS SECUNDARIOS */
+
+.reveal-label {
+  color: #777;
+  font-size: 9px;
+  letter-spacing: 6px;
+  margin-bottom: 30px;
+}
+
+/* LOGOTIPO CALIGRÁFICO */
+
+.reveal-logo {
+  font-family: 'Pinyon Script', cursive;
+  font-size: clamp(85px, 13vw, 155px);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.2;
+  margin-bottom: 35px;
+}
+
+/* UBICACIÓN EN ARIAL ELEGANTE */
+
+.address {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(17px, 2.5vw, 25px);
+  font-weight: 300;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  line-height: 1.8;
+
+  max-width: 850px;
+
+  filter: blur(18px);
+  opacity: 0;
+  transform: translateY(20px);
+
+  transition:
+    filter 2s ease,
+    opacity 2s ease,
+    transform 2s ease;
+
+  transition-delay: .6s;
+}
+
+.reveal-screen.active .address {
+  filter: blur(0);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* BOTÓN GOOGLE MAPS */
+
+.map-button {
+  display: inline-block;
+  margin-top: 40px;
+
+  border: 1px solid #aaa;
+  color: white;
+
+  text-decoration: none;
+  padding: 18px 35px;
+
+  font-size: 9px;
+  letter-spacing: 4px;
+
+  transition: .3s;
+  opacity: 0;
+  transition-delay: 1.8s;
+}
+
+.reveal-screen.active .map-button {
+  opacity: 1;
+}
+
+.map-button:hover {
+  color: black;
+  background: white;
+}
+
+/* MENSAJE FINAL */
+
+.final-message {
+  font-family: 'Pinyon Script', cursive;
+  font-size: 45px;
+  margin-top: 45px;
+
+  opacity: 0;
+  transition: opacity 1.5s;
+  transition-delay: 2.5s;
+}
+
+.reveal-screen.active .final-message {
+  opacity: 1;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+  border-top: 1px solid #252525;
+  padding-top: 20px;
+}
+
+footer span {
+  font-size: 8px;
+  color: #555;
+  letter-spacing: 2px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width: 600px) {
+
+  .container {
+    padding: 25px 6%;
+  }
+
+  .logo {
+    font-size: 46px;
+  }
+
+  .small {
+    font-size: 7px;
+  }
+
+  main {
+    padding: 35px 0;
+  }
+
+  h1 {
+    letter-spacing: -2px;
+  }
+
+  .hold-button {
+    width: 140px;
+    height: 140px;
+  }
+
+  footer span {
+    font-size: 7px;
+  }
+
+  .reveal-logo {
+    font-size: 100px;
+  }
+
+  .address {
+    font-size: 17px;
+    letter-spacing: 3px;
+  }
+
+  .final-message {
+    font-size: 38px;
+  }
+}
+
+@media(prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="noise"></div>
+
+<!-- =========================
+     PANTALLA INICIAL
+========================= -->
+
+<div class="container" id="mainContent">
+
+<header>
+
+  <div class="logo">Vendetta</div>
+
+  <div class="small">
+    PRIVATE EVENT · 001
+  </div>
+
+</header>
+
+<main>
+
+  <div class="eyebrow">
+    YOU HAVE BEEN INVITED
+  </div>
+
+  <h1>THE NIGHT</h1>
+
+  <div class="subtitle">
+    has a secret.
+  </div>
+
+  <div class="description">
+    SOME THINGS ARE BETTER LEFT UNKNOWN.
+  </div>
+
+  <!-- BOTÓN PARA REVELAR -->
+
+  <div class="hold-area">
+
+    <button
+      class="hold-button"
+      id="holdButton"
+      aria-label="Mantén presionado para revelar la ubicación"
+    >
+
+      <svg viewBox="0 0 150 150" aria-hidden="true">
+
+        <circle
+          class="track"
+          cx="75"
+          cy="75"
+          r="68"
+        />
+
+        <circle
+          class="progress"
+          id="progress"
+          cx="75"
+          cy="75"
+          r="68"
+        />
+
+      </svg>
+
+      <span class="button-text" id="buttonText">
+        HOLD TO REVEAL
+      </span>
+
+      <span class="button-subtext">
+        3 SECONDS
+      </span>
+
+    </button>
+
+  </div>
+
+</main>
+
+<footer>
+
+  <span>VENDETTA © 2026</span>
+
+  <span>
+    AN INVITATION TO THE UNEXPECTED
+  </span>
+
+</footer>
+
+</div>
+
+<!-- =========================
+     PANTALLA DE UBICACIÓN
+========================= -->
+
+<section class="reveal-screen" id="revealScreen">
+
+  <div class="reveal-label">
+    THE SECRET IS OUT
+  </div>
+
+  <div class="reveal-logo">
+    Vendetta
+  </div>
+
+  <div class="reveal-label">
+    YOUR DESTINATION
+  </div>
+
+  <!-- AQUÍ APARECE LA UBICACIÓN EN ARIAL -->
+
+  <div class="address" id="address"></div>
+
+  <a
+    class="map-button"
+    id="mapLink"
+    href="#"
+    target="_blank"
+    rel="noopener"
+  >
+    OPEN IN GOOGLE MAPS ↗
+  </a>
+
+  <div class="final-message">
+    See you there.
+  </div>
+
+</section>
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+/* ==================================
+   EDITA LOS DATOS DEL EVENTO AQUÍ
+================================== */
+
+const EVENT = {
+
+  // DIRECCIÓN QUE SE VA A REVELAR
+
+  address: "POLANCO, MEXICO CITY",
+
+  // ENLACE DE GOOGLE MAPS
+
+  mapsLink: "https://www.google.com/maps/search/?api=1&query=Polanco%2C+Mexico+City",
+
+  // TIEMPO PARA DESBLOQUEAR
+  // 3000 = 3 SEGUNDOS
+
+  holdDuration: 3000
+
+};
+
+/* ==================================
+   ELEMENTOS
+================================== */
+
+const button = document.getElementById("holdButton");
+
+const progress = document.getElementById("progress");
+
+const buttonText = document.getElementById("buttonText");
+
+const revealScreen = document.getElementById("revealScreen");
+
+const mainContent = document.getElementById("mainContent");
+
+const circumference = 2 * Math.PI * 68;
+
+/* ==================================
+   CONFIGURAR UBICACIÓN
+================================== */
+
+document.getElementById("address").textContent =
+  EVENT.address;
+
+document.getElementById("mapLink").href =
+  EVENT.mapsLink;
+
+/* ==================================
+   SISTEMA DE PROGRESO
+================================== */
+
+let startTime = null;
+
+let animationFrame = null;
+
+let completed = false;
+
+function updateProgress(timestamp) {
+
+  if (!startTime) {
+    startTime = timestamp;
+  }
+
+  const elapsed = timestamp - startTime;
+
+  const percentage = Math.min(
+    elapsed / EVENT.holdDuration,
+    1
+  );
+
+  progress.style.strokeDashoffset =
+    circumference * (1 - percentage);
+
+  if (percentage >= 1) {
+
+    reveal();
+
+    return;
+
+  }
+
+  animationFrame =
+    requestAnimationFrame(updateProgress);
+
+}
+
+/* ==================================
+   MANTENER PRESIONADO
+================================== */
+
+function startHold(event) {
+
+  if (completed) return;
+
+  event.preventDefault();
+
+  cancelAnimationFrame(animationFrame);
+
+  startTime = null;
+
+  buttonText.textContent = "UNLOCKING...";
+
+  animationFrame =
+    requestAnimationFrame(updateProgress);
+
+}
+
+/* ==================================
+   SOLTAR BOTÓN
+================================== */
+
+function cancelHold() {
+
+  if (completed) return;
+
+  cancelAnimationFrame(animationFrame);
+
+  startTime = null;
+
+  progress.style.strokeDashoffset =
+    circumference;
+
+  buttonText.textContent =
+    "HOLD TO REVEAL";
+
+}
+
+/* ==================================
+   REVELAR UBICACIÓN
+================================== */
+
+function reveal() {
+
+  completed = true;
+
+  cancelAnimationFrame(animationFrame);
+
+  progress.style.strokeDashoffset = 0;
+
+  buttonText.textContent = "UNLOCKED";
+
+  // DESAPARECE LA PANTALLA INICIAL
+
+  mainContent.style.opacity = "0";
+
+  // APARECE LA REVELACIÓN
+
+  setTimeout(() => {
+
+    revealScreen.classList.add("active");
+
+  }, 700);
+
+  // VIBRACIÓN EN CELULARES COMPATIBLES
+
+  if (navigator.vibrate) {
+
+    navigator.vibrate(100);
+
+  }
+
+}
+
+/* ==================================
+   EVENTOS DE INTERACCIÓN
+================================== */
+
+button.addEventListener(
+  "pointerdown",
+  startHold
+);
+
+button.addEventListener(
+  "pointerup",
+  cancelHold
+);
+
+button.addEventListener(
+  "pointerleave",
+  cancelHold
+);
+
+button.addEventListener(
+  "pointercancel",
+  cancelHold
+);
+
+</script>
+
+</body>
+</html>
